@@ -1,14 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 import Card from "react-bootstrap/Card";
+import { useDispatch, useSelector } from "react-redux";
+import { add } from "../Store/CartSlice";
+import { getProducts } from "../Store/ProductSlice";
+import StatusCode from "../utils/StatusCode";
 
 const Product = () => {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const { data: products, status } = useSelector((state) => state.products);
+
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((data) => data.json())
-      .then((result) => setProducts(result));
-  }, []);
+    //dispatch an action for fetchProducts
+    dispatch(getProducts());
+  }, [dispatch]);
+
+  if (status === StatusCode.LOADING) {
+    return <p>Loading...</p>;
+  }
+
+  if (status === StatusCode.ERROR) {
+    return (
+      <Alert key="danger" variant="danger">
+        Something went wrong!Try again later
+      </Alert>
+    );
+  }
+
+  const addToCart = (product) => {
+    //dispacth an add action
+    dispatch(add(product));
+  };
 
   const cards = products.map((product) => (
     <div className="col-md-3" style={{ marginBottom: "10px" }}>
@@ -26,7 +49,9 @@ const Product = () => {
           <Card.Text>INR: {product.price}</Card.Text>
         </Card.Body>
         <Card.Footer>
-          <Button variant="primary">Add To Cart</Button>
+          <Button variant="primary" onClick={() => addToCart(product)}>
+            Add To Cart
+          </Button>
         </Card.Footer>
       </Card>
     </div>

@@ -1,7 +1,6 @@
 import "./App.css";
 import Cart from "./components/Cart";
 import Dashboard from "./components/Dashboard";
-import Product from "./components/Product";
 import RootLayout from "./components/RootLayout";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
